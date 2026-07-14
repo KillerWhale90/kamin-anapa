@@ -34,6 +34,8 @@
 <section class="hero" id="hero">
   <div class="hero__media">
     <video class="hero__video" autoplay muted loop playsinline preload="auto" poster="assets/img/hero-fire.jpg">
+      <!-- лёгкая версия для мобильных (~0.5 МБ вместо 7 МБ) -->
+      <source src="assets/video/fireplace-mobile.mp4" media="(max-width: 780px)" type="video/mp4">
       <source src="assets/video/fireplace.mp4" type="video/mp4">
     </video>
   </div>
