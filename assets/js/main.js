@@ -180,11 +180,17 @@
     const hero = $('.hero');
     const heroVideo = $('.hero__video');
     if (hero && heroVideo) {
-      // запустить видео (на случай блокировки автоплея); touchstart — для iOS
-      const tryPlay = () => { const p = heroVideo.play(); if (p) p.catch(() => {}); };
+      // запустить видео (на случай блокировки автоплея): пробуем на каждом
+      // касании/клике/скролле, пока реально не заиграет (энергосбережение iOS,
+      // экономия трафика Android и т.п. отклоняют первые попытки)
+      const tryPlay = () => { if (heroVideo.paused) { const p = heroVideo.play(); if (p) p.catch(() => {}); } };
+      const gestures = ['click', 'touchstart', 'touchend', 'scroll'];
       heroVideo.addEventListener('loadeddata', tryPlay);
-      document.addEventListener('click', tryPlay, { once: true });
-      document.addEventListener('touchstart', tryPlay, { once: true });
+      heroVideo.addEventListener('canplay', tryPlay);
+      gestures.forEach(ev => document.addEventListener(ev, tryPlay, { passive: true }));
+      heroVideo.addEventListener('playing', () => {
+        gestures.forEach(ev => document.removeEventListener(ev, tryPlay));
+      }, { once: true });
     }
 
     // Пин-зум героя — только на десктопе/планшете (на мобильных pinned-scroll дёргается)
