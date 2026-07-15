@@ -288,7 +288,8 @@ h1,h2,h3,h4{ font-family:var(--serif); font-weight:600; line-height:1.04; letter
 .cases{ background:linear-gradient(180deg,var(--bg-soft),var(--bg)); overflow:hidden; }
 .marquee{ display:flex; gap:22px; width:max-content; animation:marquee 42s linear infinite; }
 .marquee:hover{ animation-play-state:paused; }
-@keyframes marquee{ to{ transform:translateX(-50%); } }
+/* -50% минус половина gap (22px/2): ряд продублирован, стык цикла бесшовный */
+@keyframes marquee{ to{ transform:translateX(calc(-50% - 11px)); } }
 .case{ position:relative; width:300px; aspect-ratio:5/4; border-radius:var(--r); overflow:hidden; border:1px solid var(--line); flex:none; }
 .case img{ width:100%; height:100%; object-fit:cover; transition:transform .9s var(--ease), filter .6s; filter:saturate(.9) brightness(.92); }
 .case::after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg,transparent 45%,rgba(12,9,7,.85)); opacity:0; transition:opacity .4s; }
