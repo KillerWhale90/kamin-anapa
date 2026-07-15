@@ -4,6 +4,12 @@
    ============================================================ */
 (function () {
   'use strict';
+  // всегда открываемся с начала страницы: браузерное восстановление прошлой
+  // позиции скролла вместе с pin-анимацией героя выглядит как резкий
+  // самопроизвольный прыжок вниз при загрузке
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  if (!location.hash) window.scrollTo(0, 0);
+
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const $ = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
@@ -143,8 +149,16 @@
   counters.forEach(c => cio.observe(c));
 
   /* ---------- Duplicate marquee for seamless loop ---------- */
+  // клонируем карточки, НЕ переписывая innerHTML: innerHTML += пересоздаёт
+  // оригиналы, из-за чего недогруженные картинки сбрасываются и мигают
   const marquee = $('.marquee');
-  if (marquee) marquee.innerHTML += marquee.innerHTML;
+  if (marquee) {
+    Array.from(marquee.children).forEach(c => {
+      const dup = c.cloneNode(true);
+      dup.setAttribute('aria-hidden', 'true');
+      marquee.appendChild(dup);
+    });
+  }
 
   /* ---------- Magnetic primary buttons ---------- */
   if (!prefersReduced && matchMedia('(pointer:fine)').matches) {
