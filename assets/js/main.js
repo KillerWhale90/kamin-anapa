@@ -148,16 +148,40 @@
   }, { threshold: 0.6 });
   counters.forEach(c => cio.observe(c));
 
-  /* ---------- Duplicate marquee for seamless loop ---------- */
+  /* ---------- Marquee: бесшовная лента через scrollLeft ---------- */
   // клонируем карточки, НЕ переписывая innerHTML: innerHTML += пересоздаёт
   // оригиналы, из-за чего недогруженные картинки сбрасываются и мигают
   const marquee = $('.marquee');
+  const marqueeClip = $('.marquee-clip');
   if (marquee) {
     Array.from(marquee.children).forEach(c => {
       const dup = c.cloneNode(true);
       dup.setAttribute('aria-hidden', 'true');
       marquee.appendChild(dup);
     });
+  }
+  if (marquee && marqueeClip && !prefersReduced) {
+    const SPEED = 32; // px/сек (~80 сек на полный круг)
+    let x = 0, paused = false, last = null;
+    // пауза по наведению — только для настоящей мыши (на таче hover «залипает»)
+    if (matchMedia('(hover:hover) and (pointer:fine)').matches) {
+      marqueeClip.addEventListener('mouseenter', () => { paused = true; });
+      marqueeClip.addEventListener('mouseleave', () => { paused = false; });
+    }
+    const tick = (t) => {
+      if (last === null) last = t;
+      const dt = Math.min(64, t - last);
+      last = t;
+      if (!paused) {
+        // период повтора = расстояние от первой карточки до её клона
+        const period = marquee.children[marquee.children.length / 2].offsetLeft;
+        x += SPEED * dt / 1000;
+        if (period > 0 && x >= period) x -= period;
+        marqueeClip.scrollLeft = x;
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
   }
 
   /* ---------- Magnetic primary buttons ---------- */
