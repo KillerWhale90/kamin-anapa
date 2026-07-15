@@ -127,8 +127,10 @@
   }
 
   /* ---------- Reveal on scroll (IntersectionObserver fallback) ---------- */
+  // класс «in» снимаем при уходе блока с экрана, чтобы анимация появления
+  // срабатывала каждый раз (в обе стороны прокрутки), а не однократно
   const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    entries.forEach(e => e.target.classList.toggle('in', e.isIntersecting));
   }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
   $$('.reveal, .line-mask').forEach(el => io.observe(el));
 
