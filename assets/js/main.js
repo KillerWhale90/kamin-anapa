@@ -253,8 +253,11 @@
       // настраиваемые параметры (можно править панелью ?tune)
       let zoomVal = 1.9;
 
+      // scrub 0.3 (было 1): при быстрой прокрутке анимация запаздывала на ~1с,
+      // пин отпускал хиро раньше, чем затемнение доходило до конца, —
+      // полупрозрачное видео «отклеивалось» рывком
       const tl = gsap.timeline({
-        scrollTrigger: { trigger: hero, start: 'top top', end: '+=170%', scrub: 1, pin: true, anticipatePin: 1 }
+        scrollTrigger: { trigger: hero, start: 'top top', end: '+=170%', scrub: 0.3, pin: true, anticipatePin: 1 }
       });
       // приближение к камину: масштаб видео растёт
       tl.to('.hero__video', { scale: () => zoomVal, ease: 'none' }, 0)
@@ -262,9 +265,11 @@
         .to('.hero__glow', { scale: 1.15, opacity: 1, ease: 'power1.in' }, 0)
         .to('.hero__content', { y: -80, opacity: 0, ease: 'power1.in' }, 0)
         .to('.scroll-hint', { opacity: 0, duration: .12 }, 0)
-        // в конце кадр продолжает движение — уходит ВВЕРХ и параллельно затемняется
-        .to('.hero__video', { yPercent: -68, ease: 'power1.in', duration: .45 }, .55)
-        .to('.hero__fadeout', { opacity: 1, ease: 'sine.in', duration: .45 }, .55);
+        // в конце кадр продолжает движение — уходит ВВЕРХ и параллельно затемняется;
+        // затемнение завершается к 70% дистанции пина, чтобы даже с учётом
+        // запаздывания scrub экран к моменту отпина гарантированно был чёрным
+        .to('.hero__video', { yPercent: -68, ease: 'power1.in', duration: .45 }, .45)
+        .to('.hero__fadeout', { opacity: 1, ease: 'sine.in', duration: .3 }, .4);
 
       // ---- скрытый настройщик: открывается через ?tune ----
       const tuner = $('.ctrls');
