@@ -256,8 +256,10 @@
       // scrub 0.3 (было 1): при быстрой прокрутке анимация запаздывала на ~1с,
       // пин отпускал хиро раньше, чем затемнение доходило до конца, —
       // полупрозрачное видео «отклеивалось» рывком
+      // 125% (было 170%): после полного затемнения оставался длинный «чёрный»
+      // отрезок прокрутки — следующий раздел приходил слишком поздно
       const tl = gsap.timeline({
-        scrollTrigger: { trigger: hero, start: 'top top', end: '+=170%', scrub: 0.3, pin: true, anticipatePin: 1 }
+        scrollTrigger: { trigger: hero, start: 'top top', end: '+=125%', scrub: 0.3, pin: true, anticipatePin: 1 }
       });
       // приближение к камину: масштаб видео растёт
       tl.to('.hero__video', { scale: () => zoomVal, ease: 'none' }, 0)
