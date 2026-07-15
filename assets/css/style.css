@@ -408,6 +408,8 @@ h1,h2,h3,h4{ font-family:var(--serif); font-weight:600; line-height:1.04; letter
   .header-cta .btn--primary{ display:none; }
   /* на мобильных пина нет — видео «живёт» лёгким медленным зумом */
   .hero__video{ animation:heroBreathe 18s ease-in-out infinite alternate; }
+  /* подсказка скролла (мышка + «идём к огню») наезжает на кнопку каталога */
+  .scroll-hint{ display:none; }
   @keyframes heroBreathe{ from{ transform:translate(-50%,-50%) scale(1.04); } to{ transform:translate(-50%,-50%) scale(1.16); } }
   .hero__content{ padding-top:64px; }
   .nav.open{
