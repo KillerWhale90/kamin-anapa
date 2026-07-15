@@ -268,10 +268,10 @@
         .to('.hero__content', { y: -80, opacity: 0, ease: 'power1.in' }, 0)
         .to('.scroll-hint', { opacity: 0, duration: .12 }, 0)
         // в конце кадр продолжает движение — уходит ВВЕРХ и параллельно затемняется;
-        // затемнение завершается к 85% дистанции пина: достаточно поздно, чтобы
+        // затемнение завершается к 90% дистанции пина: достаточно поздно, чтобы
         // чернота не тянулась, и с запасом от рывка при резком скролле (scrub 0.3)
-        .to('.hero__video', { yPercent: -68, ease: 'power1.in', duration: .45 }, .5)
-        .to('.hero__fadeout', { opacity: 1, ease: 'sine.in', duration: .3 }, .55);
+        .to('.hero__video', { yPercent: -68, ease: 'power1.in', duration: .45 }, .55)
+        .to('.hero__fadeout', { opacity: 1, ease: 'sine.in', duration: .3 }, .6);
 
       // ---- скрытый настройщик: открывается через ?tune ----
       const tuner = $('.ctrls');
