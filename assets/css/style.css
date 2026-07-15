@@ -286,8 +286,11 @@ h1,h2,h3,h4{ font-family:var(--serif); font-weight:600; line-height:1.04; letter
    Cases marquee
    ============================================================ */
 .cases{ background:linear-gradient(180deg,var(--bg-soft),var(--bg)); overflow:hidden; }
-.marquee{ display:flex; gap:22px; width:max-content; animation:marquee 42s linear infinite; }
-.marquee:hover{ animation-play-state:paused; }
+.marquee{ display:flex; gap:22px; width:max-content; animation:marquee 80s linear infinite; }
+/* пауза по наведению — только для мыши: на тачскрине hover «залипает» после касания и лента встаёт */
+@media (hover:hover) and (pointer:fine){
+  .marquee:hover{ animation-play-state:paused; }
+}
 /* -50% минус половина gap (22px/2): ряд продублирован, стык цикла бесшовный */
 @keyframes marquee{ to{ transform:translateX(calc(-50% - 11px)); } }
 .case{ position:relative; width:300px; aspect-ratio:5/4; border-radius:var(--r); overflow:hidden; border:1px solid var(--line); flex:none; }
