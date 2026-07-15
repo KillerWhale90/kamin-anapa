@@ -6,9 +6,15 @@
   'use strict';
   // всегда открываемся с начала страницы: браузерное восстановление прошлой
   // позиции скролла вместе с pin-анимацией героя выглядит как резкий
-  // самопроизвольный прыжок вниз при загрузке
+  // самопроизвольный прыжок вниз при загрузке.
+  // При ОБНОВЛЕНИИ (F5) — наверх всегда, даже с якорем в адресе; при обычном
+  // переходе по ссылке с якорем (catalog.html -> index.html#contact) — к якорю
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-  if (!location.hash) window.scrollTo(0, 0);
+  const navEntry = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+  const isReload = !!(navEntry && navEntry.type === 'reload');
+  if (isReload && location.hash) history.replaceState(null, '', location.pathname + location.search);
+  const openAtTop = isReload || !location.hash;
+  if (openAtTop) window.scrollTo(0, 0);
 
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const $ = (s, c = document) => c.querySelector(s);
@@ -218,6 +224,15 @@
 
     const lenis = new Lenis({ duration: 1.15, smoothWheel: true, lerp: 0.09 });
     gsap.registerPlugin(ScrollTrigger);
+    // у ScrollTrigger своя «память скролла» для страниц с пином — без этого
+    // после F5 он возвращает страницу на старую позицию, минуя наш сброс наверх
+    if (ScrollTrigger.clearScrollMemory) ScrollTrigger.clearScrollMemory('manual');
+    // контрольный сброс наверх после того, как ScrollTrigger сделает refresh
+    if (openAtTop) {
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        lenis.scrollTo(0, { immediate: true, force: true });
+      }));
+    }
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((t) => lenis.raf(t * 1000));
     gsap.ticker.lagSmoothing(0);
@@ -268,10 +283,10 @@
         .to('.hero__content', { y: -80, opacity: 0, ease: 'power1.in' }, 0)
         .to('.scroll-hint', { opacity: 0, duration: .12 }, 0)
         // в конце кадр продолжает движение — уходит ВВЕРХ и параллельно затемняется;
-        // затемнение завершается к 90% дистанции пина: достаточно поздно, чтобы
+        // затемнение завершается к 85% дистанции пина: достаточно поздно, чтобы
         // чернота не тянулась, и с запасом от рывка при резком скролле (scrub 0.3)
-        .to('.hero__video', { yPercent: -68, ease: 'power1.in', duration: .45 }, .55)
-        .to('.hero__fadeout', { opacity: 1, ease: 'sine.in', duration: .3 }, .6);
+        .to('.hero__video', { yPercent: -68, ease: 'power1.in', duration: .45 }, .5)
+        .to('.hero__fadeout', { opacity: 1, ease: 'sine.in', duration: .3 }, .55);
 
       // ---- скрытый настройщик: открывается через ?tune ----
       const tuner = $('.ctrls');
