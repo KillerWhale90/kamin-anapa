@@ -186,15 +186,6 @@
       <figure class="case"><img src="assets/img/proj6.jpg" alt="Печной комплекс"><figcaption>Печной комплекс</figcaption></figure>
       <figure class="case"><img src="assets/img/proj7.jpg" alt="Барбекю на участке"><figcaption>Барбекю на участке</figcaption></figure>
       <figure class="case"><img src="assets/img/proj8.jpg" alt="Облицовка камина"><figcaption>Облицовка камина</figcaption></figure>
-      <!-- дубль ряда: нужен ленте для бесшовного зацикливания -->
-      <figure class="case" aria-hidden="true"><img src="assets/img/proj1.jpg" alt=""><figcaption>Барбекю-комплекс</figcaption></figure>
-      <figure class="case" aria-hidden="true"><img src="assets/img/proj2.jpg" alt=""><figcaption>Камин с облицовкой</figcaption></figure>
-      <figure class="case" aria-hidden="true"><img src="assets/img/proj3.jpg" alt=""><figcaption>Печь-камин</figcaption></figure>
-      <figure class="case" aria-hidden="true"><img src="assets/img/proj4.jpg" alt=""><figcaption>Каменный портал</figcaption></figure>
-      <figure class="case" aria-hidden="true"><img src="assets/img/proj5.jpg" alt=""><figcaption>Камин в доме</figcaption></figure>
-      <figure class="case" aria-hidden="true"><img src="assets/img/proj6.jpg" alt=""><figcaption>Печной комплекс</figcaption></figure>
-      <figure class="case" aria-hidden="true"><img src="assets/img/proj7.jpg" alt=""><figcaption>Барбекю на участке</figcaption></figure>
-      <figure class="case" aria-hidden="true"><img src="assets/img/proj8.jpg" alt=""><figcaption>Облицовка камина</figcaption></figure>
     </div>
   </div>
 </section>
@@ -282,9 +273,11 @@
   </div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
-<script src="assets/js/main.js?v=11"></script>
+<!-- библиотеки лежат локально: CDN (jsdelivr/cdnjs) в РФ с мобильных сетей часто висит,
+     а пока эти скрипты не загрузятся, main.js не запускается и секции не проявляются -->
+<script src="assets/js/vendor/gsap.min.js"></script>
+<script src="assets/js/vendor/ScrollTrigger.min.js"></script>
+<script src="assets/js/vendor/lenis.min.js"></script>
+<script src="assets/js/main.js?v=12"></script>
 </body>
 </html>
