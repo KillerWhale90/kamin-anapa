@@ -162,26 +162,40 @@
   }
   if (marquee && marqueeClip && !prefersReduced) {
     const SPEED = 32; // px/сек (~80 сек на полный круг)
-    let x = 0, paused = false, last = null;
+    let x = 0, paused = false, last = null, period = 0, applied = -1, running = false, raf = 0;
     // пауза по наведению — только для настоящей мыши (на таче hover «залипает»)
     if (matchMedia('(hover:hover) and (pointer:fine)').matches) {
       marqueeClip.addEventListener('mouseenter', () => { paused = true; });
       marqueeClip.addEventListener('mouseleave', () => { paused = false; });
     }
+    // период повтора = расстояние от первой карточки до её клона.
+    // Меряем ОДИН раз: чтение offsetLeft в каждом кадре заставляло браузер
+    // пересчитывать layout 60 раз/сек — на телефонах это душило CSS-переходы
+    // появления секций (reveal), они срабатывали без анимации
+    const measure = () => { period = marquee.children[marquee.children.length / 2].offsetLeft; };
+    window.addEventListener('resize', () => { period = 0; }, { passive: true });
     const tick = (t) => {
+      if (!running) return;
       if (last === null) last = t;
       const dt = Math.min(64, t - last);
       last = t;
       if (!paused) {
-        // период повтора = расстояние от первой карточки до её клона
-        const period = marquee.children[marquee.children.length / 2].offsetLeft;
+        if (!period) measure();
         x += SPEED * dt / 1000;
         if (period > 0 && x >= period) x -= period;
-        marqueeClip.scrollLeft = x;
+        const px = Math.round(x);
+        if (px !== applied) { applied = px; marqueeClip.scrollLeft = px; }
       }
-      requestAnimationFrame(tick);
+      raf = requestAnimationFrame(tick);
     };
-    requestAnimationFrame(tick);
+    // крутим ленту только пока она видна на экране
+    const vio = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting && !running) { running = true; last = null; raf = requestAnimationFrame(tick); }
+        else if (!e.isIntersecting && running) { running = false; cancelAnimationFrame(raf); }
+      });
+    });
+    vio.observe(marqueeClip);
   }
 
   /* ---------- Magnetic primary buttons ---------- */
